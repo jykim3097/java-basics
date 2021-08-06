@@ -871,3 +871,61 @@ public class ABC<T> {
 ### swing
 * 윈도우 응용프로그램에 ui를 만드는 것
 ### java.net 패키지
+
+### 210420
+
+## JDBC : Java DataBasce Connected 
+### 새로운 시작! 언어와 DB의 연결
+* 필요한 데이터를 DB에서 JAVA로 가져오고
+* 저장할 데이터를 JAVA에서 DB로 가져오고
+* 고전 방법, 근본이 된다
+* 속도상으로 빨라서 여전히 사용하고 있다
+
+### JDBC 프로그래밍
+* JAVA API, 언어와 DB를 연결해주는 연결자
+* 인터페이스로 작성되어있다
+* ojdbc.jar : JDBC 드라이버
+	* 이클립스에 jar 파일 연결하는 방법
+	* 프로젝트에 lib 폴더를 만들고 jar 파일을 복사해서 이클립스에 연결한다
+	* JDBC 프로젝트 안에서 jar 파일을 참조 라이브러리로 쓰도록 등록한다
+* 이를 통해 java에서 DB에 insert, select, update를 할 수 있다
+
+#### 상세
+##### Oracle 드라이버 로딩
+```(java)
+Class.forName("oracle.jdbc.driver.OracleDriver");
+```
+##### 필요한 객체
+1. 연결 객체 Connection : DB랑 JAVA 연결
+```
+String url = "jdbc:oracle:thin:IP주소:PORT번호/DB이름"; //18C 버전
+String uid = "DB접속ID";
+String upw = "DB접속PW";
+Connection conn = DriverManager.getConnection(url, uid, upw);
+```
+2. statement 객체 : SQL  전송/수신 객체
+```
+String sql = "실행할 sql문";
+PreparedStatement pstmt = conn.prepareStatement(sql);
+```
+* sql문에 '?'를 사용해 입력받은 값으로 수행할 수도 있다.
+	* 물음표 갯수에 따라 순서대로 1부터 인덱스가 부여된다
+	* 아래와 같이 사용
+```
+pstmt.setInt(1, id)
+```
+* select일 때만 executeQuery를 사용하고
+* 나머지에서는 executeUpdate를 사용한다 > 0,1 반환 > 성공 시 1
+3. ResultSet 객체 : SQL문 조회 결과를 '전부' 받아옴
+	* Select 문에서만 필요하다!
+	* rs.next()를 통해 다음 행에 접근할 수 있다
+```
+ResultSet rs = pstmt.executeQuery();
+```
+
+#### 클래스로 빼는 방법
+* java 파일로 하나씩 만들 수도 있지만 클래스에 메서드를 만들어 사용하면 더 간편하다
+* 클래스에 (멤버) 정보를 저장하고 클래스 단위로 사용할 수 있다
+
+#### 인터페이스로 사용하는 방법
+* 추상메서드로 선언하고 DAO 클래스에서 오버로딩한다
